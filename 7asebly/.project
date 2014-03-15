@@ -30,11 +30,4 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>libs/IDTUniPaySDK.jar</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Desktop/7asebly/trunk/Sphere/7aseblyProject/7asebly/libs/IDTUniPaySDK.jar</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>
