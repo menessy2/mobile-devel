@@ -2,7 +2,8 @@ package com.hasebly;
 
 abstract public class CardPresentData<inputType> extends CardData<inputType>{
 
-	String trackTwo;
+	private String trackTwo;
+	private String signature;
 	
 	public CardPresentData(String expiryDate, String pan, String trackTwo, String name){
 		super(expiryDate,pan,name);		
@@ -10,6 +11,16 @@ abstract public class CardPresentData<inputType> extends CardData<inputType>{
 	}
 	
 	
+	protected String getSignature() {
+		return signature;
+	}
+
+
+	protected void setSignature(String signature) {
+		this.signature = signature;
+	}
+
+
 	public CardPresentData(){
 		super();
 	}
