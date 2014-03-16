@@ -41,14 +41,23 @@ public class EncryptionVault {
 		return rsaKey;
 	}
 
-	public static void setRsaKey(String modulus, String exponent) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public static void setRsaKey(String modulus, String exponent) {
 		exponent = exponent.replaceAll("[^\\d.]", "");
 	    modulus = modulus.replaceAll("[^\\d.]", "");
 	    BigInteger mod = new BigInteger(modulus);
 	    BigInteger exp = new BigInteger(exponent);
-	    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-	    RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(mod, exp);
-	    rsaKey = (RSAPublicKey) keyFactory.generatePublic(pubKeySpec);
+	    KeyFactory keyFactory;
+		try {
+			keyFactory = KeyFactory.getInstance("RSA");
+			RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(mod, exp);
+		    rsaKey = (RSAPublicKey) keyFactory.generatePublic(pubKeySpec);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	    
 	}
 	
 	private static String generateRandomPassword()

@@ -5,16 +5,74 @@ import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.os.Build;
 public class RequestHub {
 	
-	protected JSONObject sendEncryptionReques() throws JSONException
+	
+	protected JSONObject checkPhoneSupport() 
 	{
-		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute("https://account.7asebly.com/sphere/request");
-		JSONObject encryptionDetails = new JSONObject(temp.responce);
-		return encryptionDetails;
+		String model =  Build.MANUFACTURER + " " + Build.MODEL;
+		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
+		clearVaribaes.put("model",model);
+		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute( // get the correct url from menesy
+				"https://account.7asebly.com/sphere/make_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}	
+	
+	
+	protected JSONObject addnewphone(String directionOutputWave, String frequenceInput, String frequenceOutput,
+			String recordBufferSize, String recordReadBufferSize, String waveDirection, String highThreshold,
+			String lowThreshold, String min, String max, String baudRate, String preAmbleFactor, String shuttleChannel,
+			String forceHeadsetPlug, String useVoiceRecognition, String volumeLevelAdjust)  
+	{
+		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
+		clearVaribaes.put("directionOutputWave",directionOutputWave);
+		clearVaribaes.put("frequenceInput",frequenceInput);
+		clearVaribaes.put("frequenceOutput",frequenceOutput);
+		clearVaribaes.put("recordBufferSize",recordBufferSize);
+		clearVaribaes.put("recordReadBufferSize",recordReadBufferSize);
+		clearVaribaes.put("waveDirection",waveDirection);
+		clearVaribaes.put("highThreshold",highThreshold);
+		clearVaribaes.put("lowThreshold",lowThreshold);
+		clearVaribaes.put("min",min);
+		clearVaribaes.put("max",max);
+		clearVaribaes.put("baudRate",baudRate);
+		clearVaribaes.put("preAmbleFactor",preAmbleFactor);
+		clearVaribaes.put("shuttleChannel",shuttleChannel);
+		clearVaribaes.put("forceHeadsetPlug",forceHeadsetPlug);
+		clearVaribaes.put("useVoiceRecognition",useVoiceRecognition);
+		clearVaribaes.put("volumeLevelAdjust",volumeLevelAdjust);
+		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute( // get the correct url from menesy
+				"https://account.7asebly.com/sphere/make_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	protected JSONObject loginRequest(String userName, String password) throws JSONException
+	protected JSONObject sendEncryptionRequest()  
+	{
+		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute("https://account.7asebly.com/sphere/request");
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	protected JSONObject loginRequest(String userName, String password)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("username",userName);
@@ -22,12 +80,17 @@ public class RequestHub {
 		clearVaribaes.put("x", EncryptionVault.getAesKey());
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
 				"https://account.7asebly.com/sphere/login",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.RSA));
-		JSONObject loginReply = new JSONObject(temp.responce);
-		return loginReply;
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	protected JSONObject magneticTransaction(String cardHolder, String cardNumber, String expiryDate, 
-			double amount, String signature, String trackOne, String trackTwo, String code) throws JSONException
+			double amount, String signature, String trackOne, String trackTwo, String code)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("ch",cardHolder);
@@ -42,12 +105,18 @@ public class RequestHub {
 			clearVaribaes.put("code",code);
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
 				"https://account.7asebly.com/sphere/make_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
-		return new JSONObject(temp.responce);
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	
 	protected JSONObject chipTransaction(String cardHolder, String cardNumber, String expiryDate, 
-			double amount, String signature,String trackTwo, String iccData, String code) throws JSONException
+			double amount, String signature,String trackTwo, String iccData, String code)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("ch",cardHolder);
@@ -62,10 +131,16 @@ public class RequestHub {
 			clearVaribaes.put("code",code);
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
 				"https://account.7asebly.com/sphere/make_chip_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
-		return new JSONObject(temp.responce);
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	protected JSONObject cashTransaction(String code, double amount, String cvv) throws JSONException
+	protected JSONObject cashTransaction(String code, double amount, String cvv)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("a",toCurrencyString(amount));
@@ -74,11 +149,17 @@ public class RequestHub {
 		clearVaribaes.put("xvalue", EncryptionVault.getSessionValue());
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
 				"https://account.7asebly.com/sphere/make_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
-		return new JSONObject(temp.responce);
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	protected JSONObject explicitMagneticTransaction(String cardHolder, String cardNumber, String expiryDate, 
-			double amount, String signature, String trackOne, String trackTwo, String recipient) throws JSONException
+			double amount, String signature, String trackOne, String trackTwo, String recipient)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("ch",cardHolder);
@@ -92,12 +173,18 @@ public class RequestHub {
 		clearVaribaes.put("recipient", recipient);
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
 				"https://account.7asebly.com/sphere/make_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
-		return new JSONObject(temp.responce);
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	
 	protected JSONObject explicitChipTransaction(String cardHolder, String cardNumber, String expiryDate, 
-			double amount, String signature,String trackTwo, String iccData, String recipient) throws JSONException
+			double amount, String signature,String trackTwo, String iccData, String recipient)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("ch",cardHolder);
@@ -111,10 +198,16 @@ public class RequestHub {
 		clearVaribaes.put("recipient", recipient);
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
 				"https://account.7asebly.com/sphere/make_chip_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
-		return new JSONObject(temp.responce);
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	protected JSONObject explicitCashTransaction(String recipient, double amount, String cvv) throws JSONException
+	protected JSONObject explicitCashTransaction(String recipient, double amount, String cvv)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("a",toCurrencyString(amount));
@@ -123,20 +216,32 @@ public class RequestHub {
 		clearVaribaes.put("xvalue", EncryptionVault.getSessionValue());
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
 				"https://account.7asebly.com/sphere/make_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
-		return new JSONObject(temp.responce);
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	protected JSONObject getInformationFromCode(String code) throws JSONException
+	protected JSONObject getInformationFromCode(String code)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("code",code);
 		clearVaribaes.put("xvalue", EncryptionVault.getSessionValue());
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
 				"https://account.7asebly.com/sphere/get_transaction_details",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
-		return new JSONObject(temp.responce);
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	protected JSONObject changeCodeStatus(String code, String update) throws JSONException
+	protected JSONObject changeCodeStatus(String code, String update)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("code",code);
@@ -144,7 +249,13 @@ public class RequestHub {
 		clearVaribaes.put("xvalue", EncryptionVault.getSessionValue());
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
 				"https://account.7asebly.com/sphere/order_completed",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
-		return new JSONObject(temp.responce);	
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 		
 	private String toCurrencyString(double amount)
