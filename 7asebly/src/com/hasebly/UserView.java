@@ -30,9 +30,15 @@ public class UserView {
 
 	public String Login(String userName, String password)
 	{
+		EncryptionVault.setAesKey();
 		RequestHandler handler  = new RequestHandler(requestHub.loginRequest(userName, password));
-		return password;
-		
+		if(handler.isSuccessful())
+		{
+			EncryptionVault.setSessionValue(handler.getResponceVariables().get("xvalue"));
+			return "Sucess";
+		}
+		else
+			return handler.getResponceVariables().get("reason");
 	}
 	
 	
