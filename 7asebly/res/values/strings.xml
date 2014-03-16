@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_card_not_present_dialog">CardNotPresentDialog</string>
     <string name="cardHolderLabel">Name on Card:</string>
+    <string name="title_activity_signature">Signature</string>
 
 </resources>

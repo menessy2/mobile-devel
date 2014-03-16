@@ -1,12 +1,22 @@
 package com.hasebly;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
 
@@ -18,7 +28,6 @@ public class AsyncRequestSender extends AsyncTask<String, String, String>{
 	
 	@Override
 	protected void onPreExecute() {
-		// TODO Auto-generated method stub
 		super.onPreExecute();
 	}
 
@@ -33,6 +42,24 @@ public class AsyncRequestSender extends AsyncTask<String, String, String>{
         SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
         DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
         HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+        HttpPost post = new HttpPost(parameters[0]);
+        
+        try {
+			post.setEntity(new StringEntity(parameters[1]));
+			HttpResponse httpResponce = httpClient.execute(post);
+			responce = inputStreamToString(httpResponce.getEntity().getContent()).toString();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       
+
 		return null;
 	}
 	
@@ -40,5 +67,19 @@ public class AsyncRequestSender extends AsyncTask<String, String, String>{
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 	}
+
+	
+	private StringBuilder inputStreamToString(InputStream is) throws IOException {
+        String line = "";
+        StringBuilder total = new StringBuilder();
+        // Wrap a BufferedReader around the InputStream
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+        // Read response until the end
+        while ((line = rd.readLine()) != null) {
+            total.append(line);
+        }
+        // Return full string
+        return total;
+    }
 	
 }

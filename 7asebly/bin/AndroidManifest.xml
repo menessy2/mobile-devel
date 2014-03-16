@@ -26,6 +26,10 @@
             android:name="com.hasebly.CardNotPresentDialog"
             android:label="@string/title_activity_card_not_present_dialog" >
         </activity>
+        <activity
+            android:name="com.hasebly.Signature"
+            android:label="@string/title_activity_signature" >
+        </activity>
     </application>
 
 </manifest>
