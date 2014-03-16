@@ -4,10 +4,9 @@ package com.hasebly;
 public class UserView {
 	
 	
-	private String username, password; 
 	private RequestHub  requestHub;
 	
-	public UserView(String username, String Password)
+	public UserView()
 	{
 		getencryptionkeys();
 		requestHub = new RequestHub();
