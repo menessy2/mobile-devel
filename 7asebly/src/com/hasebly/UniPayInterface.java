@@ -5,6 +5,13 @@ import com.idtechproducts.unipay.UniPayReaderMsg;
 
 public class UniPayInterface implements UniPayReaderMsg{
 
+    private DeviceInterface interfaceClass;
+
+    public UniPayInterface(DeviceInterface mClass){
+        interfaceClass = mClass;
+    }
+
+
 	@Override
 	public boolean getUserGrant(int arg0, String arg1) {
 		// TODO Auto-generated method stub
@@ -45,13 +52,13 @@ public class UniPayInterface implements UniPayReaderMsg{
 	@Override
 	public void onReceiveMsgConnected() {
 		// TODO Auto-generated method stub
-		
-	}
+        interfaceClass.deviceConnected();
+    }
 
 	@Override
 	public void onReceiveMsgDisconnected() {
 		// TODO Auto-generated method stub
-		
+		interfaceClass.deviceDisconnected();
 	}
 
 	@Override
