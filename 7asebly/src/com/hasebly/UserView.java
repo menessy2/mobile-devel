@@ -1,7 +1,7 @@
 package com.hasebly;
 
 
-public class UserView {
+public class UserView implements DeviceInterface {
 	
 	
 	private String username, password; 
@@ -40,6 +40,20 @@ public class UserView {
 		else
 			return handler.getResponceVariables().get("reason");
 	}
-	
-	
+
+    ///// Below three functions are necessary for the callback functions
+    ///// notice also that this calls is implementing an interface
+
+    public void setupCallbackFunctions(){
+        new UniPayInterface(this);
+    }
+
+
+    public void deviceConnected(){
+        // action when device is connected
+    }
+
+    public void deviceDisconnected() {
+        // action when device is disconnected
+    }
 }
