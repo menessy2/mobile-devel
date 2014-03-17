@@ -3,8 +3,7 @@ int dimen activity_vertical_margin 0x7f040001
 int drawable ic_launcher 0x7f020000
 int id action_settings 0x7f080001
 int id signaturePad 0x7f080000
-int layout activity_main 0x7f030000
-int layout dialog_signature 0x7f030001
+int layout dialog_signature 0x7f030000
 int menu card_not_present_dialog 0x7f070000
 int menu main 0x7f070001
 int menu signature 0x7f070002

@@ -1,29 +1,33 @@
 package com.hasebly;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+
 
 public class UserView {
 	
-	
-	private RequestHub  requestHub;
+	private UniPayInterface reader;
+	private RequestHub requestHub;
 	
 	public UserView()
 	{
-		getencryptionkeys();
 		requestHub = new RequestHub();
+		getencryptionkeys();
 	}
 	
+
+
+	public void initializeReader(Context usercontext)
+	{
+		reader = new UniPayInterface(usercontext);
+		configureReader(usercontext);
+	}
 	
 
-	private boolean getencryptionkeys() {
-		RequestHandler handler  = new RequestHandler(requestHub.sendEncryptionRequest());
-		if(handler.isSuccessful())
-		{
-			EncryptionVault.setRsaKey(handler.getResponceVariables().get("modulus"),
-					handler.getResponceVariables().get("exponent"));
-			return true;
-		}
-		else
-			return false;
+	public void destoryReader()
+	{
+		
 	}
 
 
@@ -40,5 +44,64 @@ public class UserView {
 			return handler.getResponceVariables().get("reason");
 	}
 	
+/*************************************helper methods**************************************************/
+	
+	private boolean getencryptionkeys() {
+		RequestHandler handler  = new RequestHandler(requestHub.sendEncryptionRequest());
+		if(handler.isSuccessful())
+		{
+			EncryptionVault.setRsaKey(handler.getResponceVariables().get("modulus"),
+					handler.getResponceVariables().get("exponent"));
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	
+	private void configureReader(Context userContext) {
+		SharedPreferences sharedPreferences = userContext.getSharedPreferences("Reader_Setings_7aseblySDK", userContext.MODE_PRIVATE);
+		if(sharedPreferences.contains("frequenceOutput"))
+		{
+			reader.bindWithSettings(sharedPreferences);
+		}
+		else
+		{
+			RequestHandler handler  = new RequestHandler(requestHub.checkPhoneSupport());
+			if(handler.isSuccessful())
+			{
+				Editor editor = sharedPreferences.edit();
+				editor.putInt("directionOutputWave",Integer.parseInt(handler.getResponceVariables().get("directionOutputWave")));
+				editor.putInt("frequenceInput",Integer.parseInt(handler.getResponceVariables().get("frequenceInput")));
+				editor.putInt("frequenceOutput",Integer.parseInt(handler.getResponceVariables().get("frequenceOutput")));
+				editor.putInt("recordBufferSize",Integer.parseInt(handler.getResponceVariables().get("recordBufferSize")));
+				editor.putInt("recordReadBufferSize",Integer.parseInt(handler.getResponceVariables().get("recordReadBufferSize")));
+				editor.putInt("waveDirection",Integer.parseInt(handler.getResponceVariables().get("waveDirection")));
+				editor.putInt("highThreshold",Integer.parseInt(handler.getResponceVariables().get("highThreshold")));
+				editor.putInt("lowThreshold",Integer.parseInt(handler.getResponceVariables().get("lowThreshold")));
+				editor.putInt("min",Integer.parseInt(handler.getResponceVariables().get("min")));
+				editor.putInt("max",Integer.parseInt(handler.getResponceVariables().get("max")));
+				editor.putInt("baudRate",Integer.parseInt(handler.getResponceVariables().get("baudRate")));
+				editor.putInt("preAmbleFactor",Integer.parseInt(handler.getResponceVariables().get("preAmbleFactor")));
+				editor.putInt("shuttleChannel",Integer.parseInt(handler.getResponceVariables().get("shuttleChannel")));
+				editor.putInt("forceHeadsetPlug",Integer.parseInt(handler.getResponceVariables().get("forceHeadsetPlug")));
+				editor.putInt("useVoiceRecognition",Integer.parseInt(handler.getResponceVariables().get("useVoiceRecognition")));
+				editor.putInt("volumeLevelAdjust",Integer.parseInt(handler.getResponceVariables().get("volumeLevelAdjust")));
+				editor.commit();
+			}
+			else 
+			{
+				if(handler.getResponceVariables().get("reason").equals("not found"))
+				{
+					
+				}
+				
+					
+					//yalahwy
+			}
+		}
+		
+		
+	}
 	
 }

@@ -18,6 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
 import android.util.Base64;
 
 /* Encryptor Guide 
+ * 0 = NONE
  * 1 = RSA
  * 2 = AES
  * 
@@ -30,6 +31,7 @@ public class Encryptor {
 	private static final byte[] IV ={0x66,0x75,0x63,0x6b,0x20,0x79,0x6f,0x75,0x20,0x62,0x69,0x74,0x63,0x68,0x65,0x73};
 	public static final int RSA = 1;
 	public static final int AES = 2;
+	public static final int NONE = 0;
 	
 	private static String encryptStringRSA(String clearString) 
 	{		 
@@ -121,11 +123,13 @@ public class Encryptor {
 			encrypted_data = encryptStringRSA(new String(variableString));
 		else if(encryptoinType == 2)		
 			encrypted_data = encryptStringAES(new String(variableString));
+		else if(encryptoinType == 0)
+			encrypted_data = new String(variableString);
 		
 		if(xValue != null)
 			encrypted_data = xValue.substring(0,20) + encrypted_data + xValue.substring(20);
 
-		return new String(variableString);
+		return encrypted_data;
 	}
 	
 	

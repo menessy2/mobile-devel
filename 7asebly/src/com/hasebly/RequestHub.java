@@ -16,7 +16,7 @@ public class RequestHub {
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("model",model);
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute( // get the correct url from menesy
-				"https://account.7asebly.com/sphere/make_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
+				"https://account.7asebly.com/sphere/make_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.NONE));
 		try {
 			return new JSONObject(temp.responce);
 		} catch (JSONException e) {
@@ -50,7 +50,7 @@ public class RequestHub {
 		clearVaribaes.put("useVoiceRecognition",useVoiceRecognition);
 		clearVaribaes.put("volumeLevelAdjust",volumeLevelAdjust);
 		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute( // get the correct url from menesy
-				"https://account.7asebly.com/sphere/make_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES));
+				"https://account.7asebly.com/sphere/make_transaction",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.NONE));
 		try {
 			return new JSONObject(temp.responce);
 		} catch (JSONException e) {
