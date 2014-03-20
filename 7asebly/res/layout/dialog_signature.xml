@@ -8,17 +8,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Signature" >
 
-	<android.gesture.GestureOverlayView
-         android:id="@+id/signaturePad"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:background="@android:color/white"
-         android:eventsInterceptionEnabled="true"
-         android:fadeEnabled="false"
-         android:gestureColor="@android:color/black"
-         android:gestureStrokeLengthThreshold="0.1"
-         android:gestureStrokeType="multiple"
-         android:orientation="vertical" >
-     </android.gesture.GestureOverlayView>
-    
+    <android.gesture.GestureOverlayView
+        android:id="@+id/signaturePad"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:eventsInterceptionEnabled="true"
+        android:fadeEnabled="false"
+        android:gestureColor="@android:color/black"
+        android:gestureStrokeLengthThreshold="0.1"
+        android:gestureStrokeType="multiple"
+        android:orientation="vertical" >
+    </android.gesture.GestureOverlayView>
+
 </RelativeLayout>

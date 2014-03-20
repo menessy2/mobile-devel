@@ -56,12 +56,12 @@ abstract class Apdu{
 		return apduString.substring(apduString.indexOf(separator.charAt(separator.length()+1)));
 	}
 	
-	protected List<Byte> returnListFromString(String inputByteString)
+	protected ArrayList<Byte> returnListFromString(String inputByteString)
 	{
 		
 		inputByteString.replaceAll(" ", "");
 		
-		List<Byte> returnedCommandList = new ArrayList<Byte>();
+		ArrayList<Byte> returnedCommandList = new ArrayList<Byte>();
 		for(int x = 0; x < inputByteString.length(); x+=2)
 		{
 			returnedCommandList.add(Byte.parseByte(inputByteString.substring(x, x+2),16));

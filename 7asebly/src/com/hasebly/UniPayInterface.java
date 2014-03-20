@@ -1,8 +1,11 @@
 package com.hasebly;
 
+import java.util.ArrayList;
+
 import IDTech.MSR.XMLManager.StructConfigParameters;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 
 import com.idtechproducts.unipay.UniPayReader;
 import com.idtechproducts.unipay.UniPayReaderMsg;
@@ -10,11 +13,28 @@ import com.idtechproducts.unipay.UniPayReaderMsg;
 public class UniPayInterface implements UniPayReaderMsg{
 
 	UniPayReader reader;
+	protected byte[] byteAnswer;
+	boolean completedInstruction = false;
+	Context userContext;
 	
 	protected UniPayInterface(Context userContext)
 	{
 		reader = new UniPayReader(this, userContext);
 		reader.registerListen();
+		this.userContext = userContext;
+	}
+	
+	protected void sendAPDU(ArrayList<Byte> instruction)
+	{
+		byte[] toSend = new byte[instruction.size()];
+		for(int x= 0; x < instruction.size(); x++)
+			toSend[x] = instruction.get(x);
+		reader.sendCommandExchangeAPDUPlaintext(toSend);			
+	}
+	
+	protected void readMagneticStrip()
+	{
+		reader.startSwipeCard();
 	}
 	
 	
@@ -44,7 +64,7 @@ public class UniPayInterface implements UniPayReaderMsg{
         profile.setUseVoiceRecognition((short) sharedPreferences.getInt("volumeLevelAdjust", 1));
         profile.setVolumeLevelAdjust((short) sharedPreferences.getInt("frequenceInput", 1));
 	}
-
+	
 	
 	
 	
@@ -55,9 +75,27 @@ public class UniPayInterface implements UniPayReaderMsg{
 	}
 
 	@Override
-	public void onReceiveMsgAutoConfigCompleted(StructConfigParameters arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onReceiveMsgAutoConfigCompleted(StructConfigParameters settings) {
+		SharedPreferences sharedPreferences = userContext.getSharedPreferences("Reader_Setings_7aseblySDK", userContext.MODE_PRIVATE);
+		Editor editor = sharedPreferences.edit();
+		editor.putInt("directionOutputWave",settings.getWaveDirection());
+		editor.putInt("frequenceInput",settings.getFrequenceInput());
+		editor.putInt("frequenceOutput",settings.getFrequenceOutput());
+		editor.putInt("recordBufferSize",settings.getRecordBufferSize());
+		editor.putInt("recordReadBufferSize",settings.getRecordReadBufferSize());
+		editor.putInt("waveDirection",settings.getWaveDirection());
+		editor.putInt("highThreshold",settings.gethighThreshold());
+		editor.putInt("lowThreshold",settings.getlowThreshold());
+		editor.putInt("min",settings.getMin());
+		editor.putInt("max",settings.getMax());
+		editor.putInt("baudRate",settings.getBaudRate());
+		editor.putInt("preAmbleFactor",settings.getPreAmbleFactor());
+		editor.putInt("shuttleChannel",settings.getShuttleChannel());
+		editor.putInt("forceHeadsetPlug",settings.getForceHeadsetPlug());
+		editor.putInt("useVoiceRecognition",settings.getUseVoiceRecognition());
+		editor.putInt("volumeLevelAdjust",settings.getVolumeLevelAdjust());
+		editor.commit();
+		notify();
 	}
 
 	@Override
@@ -69,21 +107,148 @@ public class UniPayInterface implements UniPayReaderMsg{
 	@Override
 	public void onReceiveMsgAutoConfigProgress(int arg0, double arg1,
 			String arg2) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
-	public void onReceiveMsgCardData(byte arg0, byte[] arg1) {
-		// TODO Auto-generated method stub
-		
+	public void onReceiveMsgCardData(byte arg0, byte[] answer) {
+		byteAnswer = answer;
+		completedInstruction = true;
+		notify();
 	}
 
 	@Override
-	public void onReceiveMsgCommandResult(int arg0, byte[] arg1) {
-		// TODO Auto-generated method stub
+	public void onReceiveMsgCommandResult(int type, byte[] answer) {
+		switch(type){
+		case UniPayReaderMsg.cmd3VThen5V:
+			
+			break;
+		case UniPayReaderMsg.cmdCancelSwipingMSRCard:
+			
+			break;
+		case UniPayReaderMsg.cmdClearBuffer:
+			
+			break;
+		case UniPayReaderMsg.cmdDefaultICCGroupSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdDefaultMSRSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdEnableSwipingMSRCard:
+			
+			break;
+		case UniPayReaderMsg.cmdEncryptOptionSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdExchangeAPDUEncrytion:
+			
+			break;
+		case UniPayReaderMsg.cmdExchangeAPDUPlaintext:
+			byteAnswer = answer;
+			notify();
+			break;
+		case UniPayReaderMsg.cmdGetAttachedReaderType:
+			
+			break;
+		case UniPayReaderMsg.cmdGetAudioJackBaudRate_Level:
+			
+			break;
+		case UniPayReaderMsg.cmdGetICCEncryptionModeOfDUKPT:
+			
+			break;
+		case UniPayReaderMsg.cmdGetICCKeyTypeOfDUKPT:
+			
+			break;
+		case UniPayReaderMsg.cmdGetICCStatus:
+			
+			break;
+		case UniPayReaderMsg.cmdGetModelNumber:
+			
+			break;
+		case UniPayReaderMsg.cmdGetOtherCommonSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdGetSendOption:
+			
+			break;
+		case UniPayReaderMsg.cmdGetSerialNumber:
+			
+			break;
+		case UniPayReaderMsg.cmdGetVersion:
+			
+			break;
+		case UniPayReaderMsg.cmdHashOptionSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdMaskOptionSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdPowerOffICC:
+			
+			break;
+		case UniPayReaderMsg.cmdPowerOnICC:
+			
+			break;
+		case UniPayReaderMsg.cmdReset:
+			
+			break;
+		case UniPayReaderMsg.cmdReviewAudioJackSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdReviewICCGroupSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdReviewICCPowerSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdReviewMSRSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdSet5V:
+			
+			break;
+		case UniPayReaderMsg.cmdSetICCEncryptionModeOfDUKPT:
+			
+			break;
+		case UniPayReaderMsg.cmdSetICCKeyTypeOfDUKPT:
+			
+			break;
+		case UniPayReaderMsg.cmdSetOtherCommonSetting:
+			
+			break;
+		case UniPayReaderMsg.cmdSetSendOption:
+			
+			break;
+		case UniPayReaderMsg.cmdSwipeCard:
+			
+			break;
+		case UniPayReaderMsg.cmdTestCommand:
+			
+			break;
+		case UniPayReaderMsg.cmdTestSwipeCard:
+			
+			break;
+		case UniPayReaderMsg.typeToOverwriteXML:
+			
+			break;
+		case UniPayReaderMsg.typeToPowerupUniPay:
+			
+			break;
+		case UniPayReaderMsg.typeToReportToIdtech:
+			
+			break;
+		case UniPayReaderMsg.typeToTryAutoConfig:
+			
+			break;
+		case UniPayReaderMsg.typeToUpdateXML:
+			
+			break;
+		}
 		
-	}
+	}			
+	
 
 	@Override
 	public void onReceiveMsgConnected() {
@@ -118,8 +283,6 @@ public class UniPayInterface implements UniPayReaderMsg{
 
 	@Override
 	public void onReceiveMsgToConnect() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
