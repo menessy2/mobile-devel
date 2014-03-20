@@ -1,8 +1,6 @@
 package com.hasebly;
 
 import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 
 
@@ -41,13 +39,13 @@ public class RApduProcessingOptions extends RApdu {
 		}
 	}
 	
-	public Queue<byte[]> populateReadingQue()
+	private ArrayList<byte[]> populateReadingQue()
 	{
-		Queue<byte[]> readingQue = new PriorityQueue<byte[]>();
+		ArrayList<byte[]> readingQue = new ArrayList<byte[]>();
 		for(int x = 0; x < processInfromation.size() ; x+=4)
 		{
 			byte[] infoTuple = new byte[2];
-			infoTuple[0] = processInfromation.get(x);
+			infoTuple[0] = (byte)(byteToInt(processInfromation.get(x))/8);
 			
 			for(int y = byteToInt(processInfromation.get(x+1)); y <= byteToInt(processInfromation.get(x+2)); x++)
 			{
@@ -57,6 +55,21 @@ public class RApduProcessingOptions extends RApdu {
 			
 		}		
 		return readingQue;		
+	}
+	
+	protected ArrayList<CApduRead> returnReadList()
+	{
+		ArrayList<byte[]> tuples = populateReadingQue();
+		ArrayList<CApduRead> toReturn = new ArrayList<CApduRead>();
+		
+		for(int x = 0; x < tuples.size(); x++)
+		{
+			toReturn.add(new CApduRead(tuples.get(x)[0], tuples.get(x)[0]));
+		}
+		if(toReturn.size() == 0)
+			return null;
+		else
+			return toReturn;
 	}
 	
 	
