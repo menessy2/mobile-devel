@@ -14,8 +14,10 @@ public class ChipCardData extends CardPresentData<String>{
 	
 	private ArrayList<RApduData> rawData;
 	protected Map<String, StorageApdu> data;
+	private String iccData;
 	
-	
+
+
 	private static final String[] SINGLE_TAGS = {"81","94","4F","82","50","5A","87","61","89","8A","8C","8D","8E","8F","83","84",
 												"9D","73","70","A5","6F","91","42","90","92","86","71","72","80","88","93","95",
 												"57","98","97","9A","99","9B","9C"};
@@ -32,11 +34,6 @@ public class ChipCardData extends CardPresentData<String>{
 
  
 	
-	public ChipCardData(){
-		super();
-		rawData = new ArrayList<RApduData>();
-		data = new HashMap<String, StorageApdu>();
-	}
 	
 	public ChipCardData(ArrayList<RApduData> rawChipData){
 		super();
@@ -47,7 +44,9 @@ public class ChipCardData extends CardPresentData<String>{
 		setPan(getPanFromData(PAN_TAG));
 		setName(getNameFromData(NAME_TAG));
 		setExpiryDate(getExpiryFromData(EXPIRY_DATE_TAG));
+		setIccDataFromData();
 	}
+	
 	
 	public boolean isTagSingle(String tag)
 	{
@@ -107,7 +106,14 @@ public class ChipCardData extends CardPresentData<String>{
 		return null; //need to format how to do THIS
 	}
 	
+	protected String getIccData() {
+		return iccData;
+	}
 	
+	private String setIccDataFromData() {
+		return null;
+	}
+
 
 	
 }

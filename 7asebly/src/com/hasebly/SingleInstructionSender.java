@@ -29,12 +29,15 @@ abstract public class SingleInstructionSender implements Callable<byte[]> {
     }
 
 	@Override
-	public byte[] call() throws Exception {
+	public byte[] call() {
+		try {
 		switch(type)
 		{
 		case AUTOCONFIG:
 			reader.reader.startAutoConfig(true);
-			wait();
+			
+				wait();
+			
 			break;
 		case SEND_INSTRUCTION:
 			reader.sendAPDU(instruction);
@@ -50,6 +53,10 @@ abstract public class SingleInstructionSender implements Callable<byte[]> {
 			break;
 		default:
 			return null;
+		}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return reader.byteAnswer;
 	}

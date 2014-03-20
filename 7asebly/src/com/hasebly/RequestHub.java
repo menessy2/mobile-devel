@@ -90,13 +90,12 @@ public class RequestHub {
 	}
 
 	protected JSONObject magneticTransaction(String cardHolder, String cardNumber, String expiryDate, 
-			double amount, String signature, String trackOne, String trackTwo, String code)  
+			 String signature, String trackOne, String trackTwo, String code)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("ch",cardHolder);
 		clearVaribaes.put("cn",cardNumber);
 		clearVaribaes.put("ed",expiryDate);
-		clearVaribaes.put("a",toCurrencyString(amount));
 		clearVaribaes.put("image",signature);
 		clearVaribaes.put("t1",trackOne);
 		clearVaribaes.put("t2",trackTwo);
@@ -116,13 +115,12 @@ public class RequestHub {
 	
 	
 	protected JSONObject chipTransaction(String cardHolder, String cardNumber, String expiryDate, 
-			double amount, String signature,String trackTwo, String iccData, String code)  
+			 String signature,String trackTwo, String iccData, String code)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
 		clearVaribaes.put("ch",cardHolder);
 		clearVaribaes.put("cn",cardNumber);
 		clearVaribaes.put("ed",expiryDate);
-		clearVaribaes.put("a",toCurrencyString(amount));
 		clearVaribaes.put("image",signature);
 		clearVaribaes.put("t2",trackTwo);
 		clearVaribaes.put("icc",iccData);		
@@ -140,10 +138,9 @@ public class RequestHub {
 		return null;
 	}
 	
-	protected JSONObject cashTransaction(String code, double amount, String cvv)  
+	protected JSONObject cashTransaction(String code, String cvv)  
 	{
 		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
-		clearVaribaes.put("a",toCurrencyString(amount));
 		clearVaribaes.put("image",cvv);
 		clearVaribaes.put("code",code);
 		clearVaribaes.put("xvalue", EncryptionVault.getSessionValue());

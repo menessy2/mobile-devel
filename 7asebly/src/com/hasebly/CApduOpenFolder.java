@@ -36,8 +36,7 @@ public class CApduOpenFolder extends CApdu<Boolean>{
 
 	private boolean singleInstruction(ArrayList<Byte> command, UniPayInterface reader) {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
-		Callable<byte[]> temp = new SingleInstructionSender(reader,command) {
-		};
+		Callable<byte[]> temp = new SingleInstructionSender(reader,command) {};
 		Future<byte[]> future = executor.submit(temp);
 		try {
 			RApduGeneric check = new RApduGeneric(future.get());

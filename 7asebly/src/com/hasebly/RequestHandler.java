@@ -33,7 +33,7 @@ public class RequestHandler {
 		else if(responce.has("OK"))
 		{
 			sucess = true;
-			populateMapFromArray("FAILED");
+			populateMapFromArray("OK");
 		}
 		else
 		{

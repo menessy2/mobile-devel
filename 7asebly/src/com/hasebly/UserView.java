@@ -1,5 +1,12 @@
 package com.hasebly;
 
+import java.util.HashMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -9,14 +16,14 @@ public class UserView {
 	
 	private UniPayInterface reader;
 	private RequestHub requestHub;
+	private MagneticCardData magData = null;
+	private ChipCardData chipData = null;
 	
 	public UserView()
 	{
 		requestHub = new RequestHub();
 		getencryptionkeys();
 	}
-	
-
 
 	public void initializeReader(Context usercontext)
 	{
@@ -27,9 +34,8 @@ public class UserView {
 
 	public void destoryReader()
 	{
-		
+		reader.destroyReader();
 	}
-
 
 	public String Login(String userName, String password)
 	{
@@ -43,6 +49,126 @@ public class UserView {
 		else
 			return handler.getResponceVariables().get("reason");
 	}
+	
+	public boolean getMagData()
+	{
+		chipData  = null;
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Callable<byte[]> temp = new SingleInstructionSender(reader,2) {
+		};
+		Future<byte[]> future = executor.submit(temp);
+		try {
+			String check = new String(future.get());
+			if(check.contains("?;"))
+			{
+				magData = new MagneticCardData(new String(future.get()));
+				return true;
+			}
+			return false;
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean getchipData()
+	{
+		magData = null;
+		return false;
+	}
+	
+	
+	public String makeTransactionWithCode(String code)
+	{
+		if(magData !=null)
+		{
+			RequestHandler handler  = new RequestHandler(requestHub.magneticTransaction(magData.getDisplayName(), 
+					magData.getPan(), magData.getExpiryDate(), magData.getSignature(), magData.getTrackOne(), magData.getTrackTwo(), code));
+			if(handler.isSuccessful())
+				return "Sucess";
+			else
+				return handler.getResponceVariables().get("reason");
+		}
+		else if(chipData != null)
+		{
+			RequestHandler handler  = new RequestHandler(requestHub.chipTransaction(chipData.getDisplayName(), 
+					chipData.getPan(), chipData.getExpiryDate(), chipData.getSignature(),chipData.getTrackTwo(),
+					chipData.getIccData(), code));
+			if(handler.isSuccessful())
+				return "Sucess";
+			else
+				return handler.getResponceVariables().get("reason");
+		}
+		else
+			return "No credit card data available";
+	}
+	
+	
+	public String makeCashTransactionWithCode(String code, String mPin)
+	{
+		RequestHandler handler  = new RequestHandler(requestHub.cashTransaction(code, mPin));
+		if(handler.isSuccessful())
+			return "Sucess";
+		else
+			return handler.getResponceVariables().get("reason");
+	}
+	
+
+	public String makeTransaction(double amount,String recipient)
+	{
+		if(magData !=null)
+		{
+			RequestHandler handler  = new RequestHandler(requestHub.explicitMagneticTransaction(magData.getDisplayName(), 
+					magData.getPan(), magData.getExpiryDate(),amount, magData.getSignature(), magData.getTrackOne(), magData.getTrackTwo(), recipient));
+			if(handler.isSuccessful())
+				return "Sucess";
+			else
+				return handler.getResponceVariables().get("reason");
+		}
+		else if(chipData != null)
+		{
+			RequestHandler handler  = new RequestHandler(requestHub.explicitChipTransaction(chipData.getDisplayName(), 
+					chipData.getPan(), chipData.getExpiryDate(),amount, chipData.getSignature(),chipData.getTrackTwo(),
+					chipData.getIccData(), recipient));
+			if(handler.isSuccessful())
+				return "Sucess";
+			else
+				return handler.getResponceVariables().get("reason");
+		}
+		else
+			return "No credit card data available";
+	}
+	
+	
+	public String makeCashTransaction(String recipient ,double amount, String mPin)
+	{
+		RequestHandler handler  = new RequestHandler(requestHub.explicitCashTransaction(recipient,amount,mPin));
+		if(handler.isSuccessful())
+			return "Sucess";
+		else
+			return handler.getResponceVariables().get("reason");
+	}
+	
+	public HashMap<String, String> getCodeInfo(String code)
+	{
+		RequestHandler handler  = new RequestHandler(requestHub.getInformationFromCode(code));
+		return handler.getResponceVariables();
+	}
+	
+	public String changeCodeStatus(String code, String update)
+	{
+		RequestHandler handler  = new RequestHandler(requestHub.changeCodeStatus(code, update));
+		if(handler.isSuccessful())
+			return "Sucess";
+		else
+			return handler.getResponceVariables().get("reason");
+	}
+	
+	
 	
 /*************************************helper methods**************************************************/
 	
