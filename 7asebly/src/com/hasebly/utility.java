@@ -1,14 +1,15 @@
-package com.example.mylib;
-
+package com.hasebly;
 import io.card.payment.CardIOActivity;
 import io.card.payment.CreditCard;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-public class utility {
+@SuppressLint("NewApi")
+public class utility  {
 	 private static final String MY_CARDIO_APP_TOKEN = "c7088748a0864365819069184022d4ca";
 
 		final String TAG = getClass().getName();
