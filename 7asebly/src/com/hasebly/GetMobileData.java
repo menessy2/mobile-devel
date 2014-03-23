@@ -1,24 +1,18 @@
 package com.hasebly;
 
-import java.io.ByteArrayOutputStream;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.gesture.GestureOverlayView;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 
-
-public class Signature extends android.support.v4.app.DialogFragment {
-	
+public class GetMobileData extends DialogFragment {
 	public interface AlertListener{
-        public void onSignatureDialogPositiveClick(DialogFragment dialog,String signatre);
+        public void onMobileDialogPositiveClick(DialogFragment dialog,String mobileNumber, String mPin);
     }
 
 
@@ -43,23 +37,16 @@ public class Signature extends android.support.v4.app.DialogFragment {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
-        View alertview = inflater.inflate(R.layout.dialog_signature, null);
-        final GestureOverlayView signature = (GestureOverlayView) alertview.findViewById(R.id.signaturePad);
+        View alertview = inflater.inflate(R.layout.dialog_get_mobile_data, null);
+        final EditText mobilenumber = (EditText) alertview.findViewById(R.id.MobileNoEntry);
+        final EditText mPin = (EditText) alertview.findViewById(R.id.MPinInput);        
         builder.setView(alertview)
-
+        
                 .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                    	signature.setDrawingCacheEnabled(true);
-                        Bitmap image = Bitmap.createBitmap(signature.getDrawingCache());
-                        signature.setDrawingCacheEnabled(false);
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        image.compress(Bitmap.CompressFormat.PNG, 90, stream);
-                        byte [] byte_arr = stream.toByteArray();
-                        String image_str = Base64.encodeToString(byte_arr,Base64.DEFAULT);
-                        image_str = image_str.replaceAll("\\s", "");
-                        image_str = image_str.replaceAll("\\n", "");
-                        image_str = image_str.replace("=","*");
-                        mListener.onSignatureDialogPositiveClick(Signature.this, image_str);
+          
+                        mListener.onMobileDialogPositiveClick(GetMobileData.this, mobilenumber.getText().toString()
+                        		, mPin.getText().toString());
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -71,5 +58,6 @@ public class Signature extends android.support.v4.app.DialogFragment {
         return builder.create();
 
     }
+
 
 }

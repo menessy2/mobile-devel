@@ -7,5 +7,6 @@
     <string name="title_activity_card_not_present_dialog">CardNotPresentDialog</string>
     <string name="cardHolderLabel">Name on Card:</string>
     <string name="title_activity_signature">Signature</string>
+    <string name="title_activity_get_mobile_data">GetMobileData</string>
 
 </resources>

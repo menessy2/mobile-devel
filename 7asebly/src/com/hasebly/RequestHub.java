@@ -255,6 +255,43 @@ public class RequestHub {
 		return null;
 	}
 		
+	protected JSONObject explicitMobileTransaction(String mobileNumber, String mPin, String recipient, double amount)  
+	{
+		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
+		clearVaribaes.put("mobileNumber",mobileNumber);
+		clearVaribaes.put("mPin",mPin);
+		clearVaribaes.put("recipient", recipient);
+		clearVaribaes.put("a",toCurrencyString(amount));
+		clearVaribaes.put("xvalue", EncryptionVault.getSessionValue());
+		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
+				"",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES)); //TODO; put the new url place
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	protected JSONObject mobileTransaction(String mobileNumber, String mPin, String code)  
+	{
+		HashMap<String, String> clearVaribaes = new HashMap<String, String>();
+		clearVaribaes.put("mobileNumber",mobileNumber);
+		clearVaribaes.put("mPin",mPin);
+		clearVaribaes.put("code", code);
+		clearVaribaes.put("xvalue", EncryptionVault.getSessionValue());
+		AsyncRequestSender temp = (AsyncRequestSender) new AsyncRequestSender().execute(
+				"",Encryptor.encryptRequestVariables(clearVaribaes, Encryptor.AES)); //TODO; put the new url place
+		try {
+			return new JSONObject(temp.responce);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	private String toCurrencyString(double amount)
 	{
 		NumberFormat formatter = NumberFormat.getCurrencyInstance();

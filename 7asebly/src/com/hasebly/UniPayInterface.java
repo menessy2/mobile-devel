@@ -12,16 +12,18 @@ import com.idtechproducts.unipay.UniPayReaderMsg;
 
 public class UniPayInterface implements UniPayReaderMsg{
 
-	UniPayReader reader;
+	protected UniPayReader reader;
 	protected byte[] byteAnswer;
-	boolean completedInstruction = false;
-	Context userContext;
+	protected boolean completedInstruction = false;
+	protected Context userContext;
+	CallbackFunctionsInterface actionListner;
 	
 	protected UniPayInterface(Context userContext)
 	{
 		reader = new UniPayReader(this, userContext);
 		reader.registerListen();
 		this.userContext = userContext;
+		actionListner = (CallbackFunctionsInterface) userContext;
 	}
 	
 	protected void sendAPDU(ArrayList<Byte> instruction)
@@ -252,14 +254,12 @@ public class UniPayInterface implements UniPayReaderMsg{
 
 	@Override
 	public void onReceiveMsgConnected() {
-		// TODO Auto-generated method stub
-		
+		actionListner.readerPluggedIn();
 	}
 
 	@Override
 	public void onReceiveMsgDisconnected() {
-		// TODO Auto-generated method stub
-		
+		actionListner.readerunplugged();
 	}
 
 	@Override

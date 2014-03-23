@@ -1,5 +1,6 @@
 package com.hasebly;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -10,14 +11,19 @@ import java.util.concurrent.Future;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 
 
-public class UserView {
+public class UserView implements Signature.AlertListener, GetMobileData.AlertListener {
 	
 	private UniPayInterface reader;
 	private RequestHub requestHub;
 	private MagneticCardData magData = null;
 	private ChipCardData chipData = null;
+	private MobileData mobData = null;
+	private FragmentManager manager;
+	private Context usercontext;
 	
 	public UserView()
 	{
@@ -25,7 +31,7 @@ public class UserView {
 		getencryptionkeys();
 	}
 
-	public void initializeReader(Context usercontext)
+	public void initializeReader()
 	{
 		reader = new UniPayInterface(usercontext);
 		configureReader(usercontext);
@@ -75,6 +81,21 @@ public class UserView {
 		return false;
 	}
 	
+	public boolean getChipData()
+	{
+		CApduOpenFolder open = new CApduOpenFolder();
+		if(!open.execute(reader))
+			return false;
+		CApduProcessingOptions fileLocationsRequest = new CApduProcessingOptions();
+		RApduProcessingOptions fileLocations = fileLocationsRequest.execute(reader);
+		ArrayList<CApduRead> readRequests = fileLocations.returnReadList();
+		ArrayList<RApduData> rawChipData = new ArrayList<RApduData>();
+		for(int x = 0; x < readRequests.size(); x ++)
+			rawChipData.add(readRequests.get(x).execute(reader));
+		chipData = new ChipCardData(rawChipData);
+		return true;//TODO: check code will be inserted here
+	}
+	
 	public boolean getchipData()
 	{
 		magData = null;
@@ -98,6 +119,15 @@ public class UserView {
 			RequestHandler handler  = new RequestHandler(requestHub.chipTransaction(chipData.getDisplayName(), 
 					chipData.getPan(), chipData.getExpiryDate(), chipData.getSignature(),chipData.getTrackTwo(),
 					chipData.getIccData(), code));
+			if(handler.isSuccessful())
+				return "Sucess";
+			else
+				return handler.getResponceVariables().get("reason");
+		}
+		else if(mobData != null)
+		{
+			RequestHandler handler  = new RequestHandler(requestHub.mobileTransaction(mobData.getMobileNumber(), 
+					mobData.getmPin(), code));
 			if(handler.isSuccessful())
 				return "Sucess";
 			else
@@ -132,15 +162,24 @@ public class UserView {
 		else if(chipData != null)
 		{
 			RequestHandler handler  = new RequestHandler(requestHub.explicitChipTransaction(chipData.getDisplayName(), 
-					chipData.getPan(), chipData.getExpiryDate(),amount, chipData.getSignature(),chipData.getTrackTwo(),
+					chipData.getPan(), chipData.getExpiryDate(),  amount, chipData.getSignature(),chipData.getTrackTwo(),
 					chipData.getIccData(), recipient));
 			if(handler.isSuccessful())
 				return "Sucess";
 			else
 				return handler.getResponceVariables().get("reason");
 		}
+		else if(mobData != null)
+		{
+			RequestHandler handler  = new RequestHandler(requestHub.explicitMobileTransaction(mobData.getMobileNumber(), 
+					mobData.getmPin(), recipient, amount));
+			if(handler.isSuccessful())
+				return "Sucess";
+			else
+				return handler.getResponceVariables().get("reason");
+		}
 		else
-			return "No credit card data available";
+			return "No data available";
 	}
 	
 	
@@ -168,7 +207,49 @@ public class UserView {
 			return handler.getResponceVariables().get("reason");
 	}
 	
+/*************************************functions that call dialogs**************************************************/
+
+	public boolean confirmTransactionUsingSignature()
+	{
+		DialogFragment signature = new Signature(); 
+		signature.show(manager, "signature");
+		if(magData.getSignature() != "" && magData.getSignature() != null && chipData.getSignature() != "" && chipData.getSignature() != null)
+			return true;
+		return false;
+	}
 	
+	public boolean getMobileData()
+	{
+		DialogFragment mobileTransaction = new GetMobileData(); 
+		mobileTransaction.show(manager, "mobiData");
+		if(mobData!=null)
+			return true;
+		return false;
+	}
+	
+	
+/*************************************override methods for dialogs**************************************************/
+
+	@Override
+	public void onSignatureDialogPositiveClick(DialogFragment dialog,
+			String signature) {
+		if(magData !=null)
+		{
+			magData.setSignature(signature);
+		}
+		else if(chipData != null)
+		{
+			chipData.setSignature(signature);
+		}		
+	}
+	
+	@Override
+	public void onMobileDialogPositiveClick(DialogFragment dialog,
+			String mobileNumber, String mPin) {
+		mobData = new MobileData(mobileNumber, mPin);
+	}
+
+
 	
 /*************************************helper methods**************************************************/
 	
@@ -186,7 +267,7 @@ public class UserView {
 	
 	
 	private void configureReader(Context userContext) {
-		SharedPreferences sharedPreferences = userContext.getSharedPreferences("Reader_Setings_7aseblySDK", userContext.MODE_PRIVATE);
+		SharedPreferences sharedPreferences = userContext.getSharedPreferences("Reader_Setings_7aseblySDK", Context.MODE_PRIVATE);
 		if(sharedPreferences.contains("frequenceOutput"))
 		{
 			reader.bindWithSettings(sharedPreferences);
@@ -229,5 +310,9 @@ public class UserView {
 		
 		
 	}
+
+	
+
+	
 	
 }
