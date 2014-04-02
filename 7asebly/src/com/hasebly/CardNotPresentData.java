@@ -1,19 +1,22 @@
 package com.hasebly;
 
 
+
+import com.hasebly.GetPaymentDetailsDialog.PaymentDetails;
+
 import io.card.payment.CardIOActivity;
 import io.card.payment.CreditCard;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
-public class CardNotPresentData extends CardData<String> implements DialogForInput.DialogListenerInterface{
+public class CardNotPresentData extends CardData<String> implements GetPaymentDetailsDialog.GetPaymentDetailsDialogListener{
 	   
-	    private static final String MY_CARDIO_APP_TOKEN = "c7088748a0864365819069184022d4ca";
-		final String TAG = getClass().getName();
+	    
 		String email;
 		public String getEmail() {
 			return email;
@@ -24,7 +27,6 @@ public class CardNotPresentData extends CardData<String> implements DialogForInp
 		}
 
 
-		private static int MY_SCAN_REQUEST_CODE = 100; // arbitrary int
 
 
 	String cvv;
@@ -38,88 +40,12 @@ public class CardNotPresentData extends CardData<String> implements DialogForInp
 		super(expiryDate,pan,name);
 		setCvv(cvv);
 	}
-	@SuppressLint("NewApi")
-	public static void PayWithPan(Activity d)
-	
-			throws ArrayIndexOutOfBoundsException{ 
-			DialogForInput test;
-			test= new DialogForInput();
-			Bundle args =new Bundle();
-			args.putInt("requestType",1);
-			test.setArguments(args);
-			//Activity d =new Activity();
-			 FragmentManager fm = d.getFragmentManager();
-			 test.show(fm,"hello");
-			 
-		}
-		
-		@SuppressLint("NewApi")
-		public static void PayWithCvv(Activity d)
-				throws ArrayIndexOutOfBoundsException{ 
-			DialogForInput test;
-				test= new DialogForInput();
-				Bundle args =new Bundle();
-				args.putInt("requestType",2);
-				
-				test.setArguments(args);
-				//Activity d =new Activity();
-				 FragmentManager fm = d.getFragmentManager();
-				 test.show(fm,"hello");
-				 
-			}
-		public static void PayWithCardio(Activity d)
-		{
-	
-		Intent scanIntent = new Intent(d, CardIOActivity.class);
-
-		// required for authentication with card.io
-		scanIntent.putExtra(CardIOActivity.EXTRA_APP_TOKEN, MY_CARDIO_APP_TOKEN);
-
-		// customize these values to suit your needs.
-		scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY, true); // default: true
-		scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, false); // default: false
-		scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE, false); // default: false
-
-		// hides the manual entry button
-		// if set, developers should provide their own manual entry mechanism in the app
-		scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, false); // default: false
-
-		// MY_SCAN_REQUEST_CODE is arbitrary and is only used within this activity.
-		d.startActivityForResult(scanIntent, MY_SCAN_REQUEST_CODE);
-	}
-
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		//super.onActivityResult(requestCode, resultCode, data);
-
-		String resultStr;
-		if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
-			
-			CreditCard scanResult = data.getParcelableExtra(CardIOActivity.EXTRA_SCAN_RESULT);
-
-			// Never log a raw card number. Avoid displaying it, but if necessary use getFormattedCardNumber()
-			resultStr = "Card Number: " + scanResult.cardNumber + "\n";
-		  	this.setPan(scanResult.cardNumber);
-			// Do something with the raw number, e.g.:
-			// myService.setCardNumber( scanResult.cardNumber );
-
-			if (scanResult.isExpiryValid()) {
-				this.setExpiryDate(scanResult.expiryMonth + "/" + scanResult.expiryYear );
-			}
-
-			if (scanResult.cvv != null) { 
-				// Never log or display a CVV
-				this.setCvv(scanResult.cvv);
-			}
-
-			
-		}
-		else {
-			resultStr = "Scan was canceled.";
-		}
-
-	}
-	
-	
+	 public static void showEditDialog(FragmentActivity d) {
+	    	//FragmentActivity d =(FragmentActivity)this;
+	        FragmentManager fm = d.getSupportFragmentManager();
+	        GetPaymentDetailsDialog editNameDialog = new GetPaymentDetailsDialog();
+	        editNameDialog.show(fm, "dlg_edit_name");
+	    }
 	
 	
 	public String getCvv() {
@@ -148,23 +74,23 @@ public class CardNotPresentData extends CardData<String> implements DialogForInp
 		return null;
 	}
 	@Override
-	public void onDialogPositiveClick(DialogFragment dialog) {
+	public void onDialogPositiveClick(DialogFragment dialog ,PaymentDetails fields) {
 		// TODO Auto-generated method stub
 
    	   
-   	   this.setName(DialogForInput.datacontainers.name.getText().toString());
-   	this.setPan(DialogForInput.datacontainers.pan.getText().toString());
-   	this.setExpiryDate(DialogForInput.datacontainers.expdate.getText().toString());
-   	this.setCvv(DialogForInput.datacontainers.cvv.getText().toString());
-   	this.setEmail(DialogForInput.datacontainers.email.getText().toString());
+   	   this.setName(fields.name.getText().toString());
+   	this.setPan(fields.pan.getText().toString());
+   	this.setExpiryDate(fields.expdate.getText().toString());
+   	this.setCvv(fields.cvv.getText().toString());
+   	this.setEmail(fields.email.getText().toString());
    	
 	}
 
 
-	@Override
-	public void onDialogNegativeClick(DialogFragment dialog) {
-		// TODO Auto-generated method stub
 
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog ,PaymentDetails fields) {
+		// TODO Auto-generated method stub
 		
 	}
 	
