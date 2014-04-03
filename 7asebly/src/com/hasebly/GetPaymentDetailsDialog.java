@@ -27,12 +27,32 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class GetPaymentDetailsDialog extends DialogFragment implements OnEditorActionListener {
 	
+	/*this class extends the android.support.v4.app version of DialogFragment this is chosen for backward compatibility
+	 * as a result the activity calling this class must extend FragmentActivity NOT Activity 
+	 * it overrides the OncreatDialog method specifically to be able to use the functionality that
+	 *  comes with positive negative buttons which are parts of "dialog"
+	 * -this class defines an interface that is implemented by the calling class to be able to extract
+	 *  data when the dialog is closing (user presses submit)
+	 * - it harnesses the Card.io library so the application housing this class must include the following activities 
+	 * in its manifest as well as the following permissions for this class to function properly
+	 *  Activities :
+	    <activity android:name="io.card.payment.CardIOActivity" android:configChanges="keyboardHidden|orientation" />
+     	<activity android:name="io.card.payment.DataEntryActivity" android:screenOrientation="portrait"/>
+     * Permissions:
+        <uses-permission android:name="android.permission.INTERNET" />
+     	<uses-permission android:name="android.permission.CAMERA" />
+     	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+     	<uses-permission android:name="android.permission.VIBRATE" />
+     * also to use Card.io an App token that is obtained after registration on the cardio website must be provided 
+     * as a string in the class, the bellow token was obtained after registration it is essential for cardio to work
+ */
 	
 	    private static final String MY_CARDIO_APP_TOKEN = "c7088748a0864365819069184022d4ca";
 		final String TAG = getClass().getName();
 		String resultStr;
 		private TextView resultTextView;
-		private static int MY_SCAN_REQUEST_CODE = 100; // arbitrary int
+		private static int MY_SCAN_REQUEST_CODE = 100; // arbitrary int used to link onActivityResult with
+		//the calling startActivtyFor Result
 
 
     public interface GetPaymentDetailsDialogListener {
@@ -88,7 +108,7 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
  void setDataFields (View view ,PaymentDetails dataFields)
  {
-	 dataFields.name = (EditText) view.findViewById(R.id.edittext_dialog_name);
+	    dataFields.name = (EditText) view.findViewById(R.id.edittext_dialog_name);
 	    dataFields.email = (EditText) view.findViewById(R.id.edittext_dialog_email);
 	    dataFields.cvv = (EditText) view.findViewById(R.id.edittext_dialog_cvv);
 	    dataFields.expdate = (EditText) view.findViewById(R.id.edittext_dialog_expdate);
@@ -186,11 +206,6 @@ class PaymentDetails
 	EditText email;
 	EditText cvv;
 	EditText expdate;
-}
-
-private void setwidgets(View v)
-{
-      
 }
 
 
