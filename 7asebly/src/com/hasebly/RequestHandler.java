@@ -58,8 +58,8 @@ public class RequestHandler {
 			for(int x = 0; x < responcesArray.length(); x++)
 			{
 				JSONObject tempObject = responcesArray.getJSONObject(x);
-				for(Iterator<String> uselessIterator = tempObject.keys(); uselessIterator.hasNext();)
-					responceVariables.put(uselessIterator.next(), tempObject.optString(uselessIterator.next()));
+				for(Iterator<?> uselessIterator = tempObject.keys(); uselessIterator.hasNext();)
+					responceVariables.put((String) uselessIterator.next(), tempObject.optString((String) uselessIterator.next()));
 			}
 			
 			} catch (JSONException e) {

@@ -78,7 +78,7 @@ public class UniPayInterface implements UniPayReaderMsg{
 
 	@Override
 	public void onReceiveMsgAutoConfigCompleted(StructConfigParameters settings) {
-		SharedPreferences sharedPreferences = userContext.getSharedPreferences("Reader_Setings_7aseblySDK", userContext.MODE_PRIVATE);
+		SharedPreferences sharedPreferences = userContext.getSharedPreferences("Reader_Setings_7aseblySDK", Context.MODE_PRIVATE);
 		Editor editor = sharedPreferences.edit();
 		editor.putInt("directionOutputWave",settings.getWaveDirection());
 		editor.putInt("frequenceInput",settings.getFrequenceInput());

@@ -1,7 +1,6 @@
 package com.hasebly;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 abstract class Apdu{ 	
@@ -14,7 +13,7 @@ abstract class Apdu{
 	
 	protected int returnIntValue(int arrayPosition)
 	{
-		return command.get(arrayPosition) & 0xff;
+		return command.get(arrayPosition) & 0xff; 	 	 	
 	}	
 	
 	public String returnHexValue(int arrayPosition)
@@ -29,42 +28,60 @@ abstract class Apdu{
 	
 	public String returnHexValue(byte inputByte)
 	{
-		return Integer.toHexString(inputByte & 0xff); 
+		return Integer.toHexString(inputByte & 0xff).toUpperCase(Locale.ENGLISH); 
 	}
 	
-	public String returnHexValue() //TODO: check if hex value is not 2 characters
+	public String returnHexValue() 
 	{
-		String apduString = "";
+		StringBuilder apduString = new StringBuilder();
 		for( int x = 0; x < command.size(); x++)
-			apduString+= Integer.toHexString(command.get(x) & 0xff);		
-		return apduString;
+			if(returnHexValue(command.get(x)).length() == 1)
+				apduString.append("0" + returnHexValue(command.get(x))); 
+			else
+				apduString.append(returnHexValue(command.get(x)));		
+		return new String(apduString);
 	}
 	
 	public String returnHexValue(String separator)
 	{
-		String apduString = "";
+		StringBuilder apduString= new StringBuilder();
 		for( int x = 0; x < command.size(); x++)
-			apduString+= separator + Integer.toHexString(command.get(x) & 0xff);	
-		return apduString.substring(apduString.indexOf(separator.charAt(separator.length()+1)));
+			if(returnHexValue(command.get(x)).length() == 1)
+				apduString.append(separator + "0" + returnHexValue(command.get(x))); 
+			else
+				apduString.append(separator + returnHexValue(command.get(x)));
+		if(separator != "")
+			for(int x = 0; x < separator.length(); x++)
+				apduString.deleteCharAt(0);
+			
+		return new String(apduString);
 	}
 
 	public String returnHexValue(ArrayList<Byte> miniList, String separator)
 	{
-		String apduString = "";
-		for( int x = 0; x < miniList.size(); x++)
-			apduString+= separator + Integer.toHexString(miniList.get(x) & 0xff);	
-		return apduString.substring(apduString.indexOf(separator.charAt(separator.length()+1)));
+		StringBuilder apduString = new StringBuilder();
+			for( int x = 0; x < miniList.size(); x++)
+				if(returnHexValue(miniList.get(x)).length() == 1)
+					apduString.append(separator + "0" + returnHexValue(miniList.get(x))); 
+				else
+					apduString.append(separator + returnHexValue(miniList.get(x)));
+			if(separator != "")
+				for(int x = 0; x < separator.length(); x++)
+					apduString.deleteCharAt(0);
+				
+			return new String(apduString);
 	}
 	
 	protected ArrayList<Byte> returnListFromString(String inputByteString)
 	{
 		
-		inputByteString.replaceAll(" ", "");
+		inputByteString = inputByteString.replaceAll(" ", "");
+		//TODO: throw an exception if the string is not even 
 		
 		ArrayList<Byte> returnedCommandList = new ArrayList<Byte>();
 		for(int x = 0; x < inputByteString.length(); x+=2)
 		{
-			returnedCommandList.add(Byte.parseByte(inputByteString.substring(x, x+2),16));
+			returnedCommandList.add((byte)Integer.parseInt(inputByteString.substring(x, x+2),16));
 		} 	
 		
 		return returnedCommandList;
@@ -74,7 +91,5 @@ abstract class Apdu{
 	{
 		return signedByte & 0xff;
 	}
-	
-	
-	
+
 }

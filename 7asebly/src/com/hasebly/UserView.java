@@ -228,6 +228,7 @@ public class UserView implements Signature.AlertListener, GetMobileData.AlertLis
 	}
 	
 	
+	
 /*************************************override methods for dialogs**************************************************/
 
 	@Override
@@ -295,16 +296,29 @@ public class UserView implements Signature.AlertListener, GetMobileData.AlertLis
 				editor.putInt("useVoiceRecognition",Integer.parseInt(handler.getResponceVariables().get("useVoiceRecognition")));
 				editor.putInt("volumeLevelAdjust",Integer.parseInt(handler.getResponceVariables().get("volumeLevelAdjust")));
 				editor.commit();
+				reader.bindWithSettings(sharedPreferences);
 			}
 			else 
 			{
 				if(handler.getResponceVariables().get("reason").equals("not found"))
 				{
-					
+					ExecutorService executor = Executors.newSingleThreadExecutor();
+					Callable<byte[]> temp = new SingleInstructionSender(reader,1) {
+					};
+					Future<byte[]> future = executor.submit(temp);
+					try {
+						future.get();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
+					reader.bindWithSettings(sharedPreferences);
 				}
 				
 					
-					//yalahwy
 			}
 		}
 		

@@ -22,7 +22,7 @@ public class ChipCardData extends CardPresentData<String>{
 												"9D","73","70","A5","6F","91","42","90","92","86","71","72","80","88","93","95",
 												"57","98","97","9A","99","9B","9C"};
 	
-	private static final String[] DOUBLE_TAGS = {"9F 01", "9F 40", "9F 02", "9F 04", "9F 03","9F 3A","9F 26"," 9F 42","9F 44",
+	/* private static final String[] DOUBLE_TAGS = {"9F 01", "9F 40", "9F 02", "9F 04", "9F 03","9F 3A","9F 26"," 9F 42","9F 44",
 												"9F 05", "5F 25", "5F 24", "9F 06", "9F 12", "5F 34", "9F 3B", "9F 43", "9F 36",
 												"9F 07", "9F 08","9F 09", "5F 54", "5F 20", " 5F 0B", "9F 34", "9F 22", "9F 27",
 												"9F 45", "9F 49","BF 0C", "9F 4C", "9F 2D", "9F 2E", "9F 2F", "9F 46", "9F 47",
@@ -31,6 +31,7 @@ public class ChipCardData extends CardPresentData<String>{
 												"9F 14", "9F 15", "9F 16", "9F 4E", "9F 17", "9F 39", "9F 38", "5F 30", "9F 4B",
 												"9F 4A", "9F 33", "9F 1A", "9F 1B","9F 1C", "9F 1D", "9F 35","9F 1F", "9F 20","5F 2A",
 												"5F 36", "9F 3C", "9F 3D", "9F 41", "9F 21", "9F 37","9F 23"};
+												*/
 
  
 	
